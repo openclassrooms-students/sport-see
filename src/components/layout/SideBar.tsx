@@ -14,11 +14,11 @@ export const SideBar = () => {
       icon: <Icon.Swimming />,
     },
     {
-      id: 1,
+      id: 3,
       icon: <Icon.Bike />,
     },
     {
-      id: 2,
+      id: 4,
       icon: <Icon.Bodybuilding />,
     },
   ];

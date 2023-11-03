@@ -17,4 +17,24 @@ export const UserSchema = z.object({
   }),
 });
 
-// type User = z.infer<typeof UserSchema>;
+export type User = z.infer<typeof UserSchema>;
+
+export const PerformanceSchema = z.object({
+  userId: z.number(),
+  kind: z.object({
+    1: z.string(),
+    2: z.string(),
+    3: z.string(),
+    4: z.string(),
+    5: z.string(),
+    6: z.string(),
+  }),
+  data: z.array(
+    z.object({
+      value: z.number(),
+      kind: z.number(),
+    })
+  ),
+});
+
+export type Performance = z.infer<typeof PerformanceSchema>;

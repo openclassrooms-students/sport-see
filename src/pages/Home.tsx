@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import Header from "../components/layout/Header";
 import { NavBar } from "../components/layout/NavBar";
 import { SideBar } from "../components/layout/SideBar";
-import { UserType, getUser } from "../service/api/user";
+import {getUser, getUserPerformance } from "../service/api/user";
 import { Nutrition } from "../components/home/Nutrition";
 import { Icon } from "../components/ui/Icon";
 import { Score } from "../components/home/Score";
+import { Radarchart } from "../components/home/Radarchart";
+import { Performance, User } from "../schema/User";
 
 const Home = () => {
-  const [user, setUser] = useState<UserType | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [performance, setPerformance] = useState<Performance | null>(null);
 
   const getDataUser = async () => {
     try {
@@ -24,8 +27,23 @@ const Home = () => {
     }
   };
 
+  const getPerformance = async () => {
+    try {
+      const res = await getUserPerformance(12);
+
+      if (res.success) {
+        setPerformance(res.data);
+      } else {
+        console.error(res.error);
+      }
+    } catch (error) {
+      console.log("error", error);
+    }
+  };
+
   useEffect(() => {
     getDataUser();
+    getPerformance();
   }, []);
 
   const dataNutritions = [
@@ -57,7 +75,6 @@ const Home = () => {
 
   const score = user?.score || user?.todayScore || 0;
 
-
   return (
     <main>
       <NavBar />
@@ -70,6 +87,7 @@ const Home = () => {
             <Header firstName={user.userInfos.firstName} />
             <Nutrition data={dataNutritions} />
             <Score score={score} />
+            <Radarchart performance={performance} />
           </>
         )}
       </div>

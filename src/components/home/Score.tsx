@@ -41,6 +41,7 @@ export const Score = ({ score }: { score: number }) => {
           innerRadius={80}
           outerRadius={100}
           className="outline-none"
+          cornerRadius={10}
         >
           {data.map((_, index) => {
             if (index === 1) {
