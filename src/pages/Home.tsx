@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Header from "../components/layout/Header";
 import { NavBar } from "../components/layout/NavBar";
 import { SideBar } from "../components/layout/SideBar";
-import {getUser, getUserPerformance } from "../service/api/user";
+import { getUser, getUserPerformance } from "../service/api/user";
 import { Nutrition } from "../components/home/Nutrition";
 import { Icon } from "../components/ui/Icon";
 import { Score } from "../components/home/Score";
 import { Radarchart } from "../components/home/Radarchart";
 import { Performance, User } from "../schema/User";
+import ActivityBarChart from "../components/home/ActivityBarChart";
+import AverageSessionChart from "../components/home/AverageSessionChart";
 
 const Home = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -85,9 +87,24 @@ const Home = () => {
         ) : (
           <>
             <Header firstName={user.userInfos.firstName} />
-            <Nutrition data={dataNutritions} />
-            <Score score={score} />
-            <Radarchart performance={performance} />
+            <div className="flex flex-wrap gap-7">
+              <div className="flex flex-wrap w-3/5 flex-grow">
+                <Suspense fallback={<p>Loading...</p>}>
+                  <ActivityBarChart />
+                </Suspense>
+
+                <div className="flex flex-grow justify-between">
+                  <Suspense fallback={<p>Loading...</p>}>
+                    <AverageSessionChart />
+                  </Suspense>{" "}
+                  <Radarchart performance={performance} />
+                  <Score score={score} />
+                </div>
+              </div>
+              <div className="w-1/4 bg-white">
+                <Nutrition data={dataNutritions} />
+              </div>
+            </div>
           </>
         )}
       </div>

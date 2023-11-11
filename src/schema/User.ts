@@ -38,3 +38,28 @@ export const PerformanceSchema = z.object({
 });
 
 export type Performance = z.infer<typeof PerformanceSchema>;
+
+export const ActivitySchema = z.object({
+  userId: z.number(),
+  sessions: z.array(
+    z.object({
+      day: z.string(),
+      kilogram: z.number(),
+      calories: z.number(),
+    })
+  ),
+});
+
+export type Activity = z.infer<typeof ActivitySchema>;
+
+export const AverageSessionSchema = z.object({
+  userId: z.number(),
+  sessions: z.array(
+    z.object({
+      day: z.number(),
+      sessionLength: z.number(),
+    })
+  ),
+});
+
+export type AverageSession = z.infer<typeof AverageSessionSchema>;

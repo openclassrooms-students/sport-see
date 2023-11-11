@@ -1,4 +1,4 @@
-import { PieChart, Pie, Label, Cell } from "recharts";
+import { PieChart, Pie, Label, Cell, Legend } from "recharts";
 import { Card } from "../ui/Card";
 
 const CustomLabel = ({
@@ -25,6 +25,14 @@ const CustomLabel = ({
   );
 };
 
+const CustomLegend = () => {
+  return (
+    <p className="ml-7 fill-zinc-800 text-base font-medium font-['Roboto'] leading-normal">
+      Score
+    </p>
+  );
+};
+
 export const Score = ({ score }: { score: number }) => {
   const data = [
     { name: "score", value: score * 100 },
@@ -32,7 +40,8 @@ export const Score = ({ score }: { score: number }) => {
   ];
   return (
     <Card>
-      <PieChart width={250} height={250} className="bg-white">
+      <PieChart width={250} height={250}>
+        <circle cx="50%" cy="50%" r="80" fill="#fff" />
         <Pie
           data={data}
           cx="50%"
@@ -42,6 +51,7 @@ export const Score = ({ score }: { score: number }) => {
           outerRadius={100}
           className="outline-none"
           cornerRadius={10}
+          stroke="none"
         >
           {data.map((_, index) => {
             if (index === 1) {
@@ -50,10 +60,12 @@ export const Score = ({ score }: { score: number }) => {
             return (
               <Cell
                 key={`cell-${index}`}
+                fill="#FBBF24"
                 className="fill-primary rounded-full"
               />
             );
           })}
+
           <Label
             content={
               <CustomLabel
@@ -67,6 +79,7 @@ export const Score = ({ score }: { score: number }) => {
             position="center"
           />
         </Pie>
+        <Legend verticalAlign="top" content={<CustomLegend />} />
       </PieChart>
     </Card>
   );
