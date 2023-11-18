@@ -5,11 +5,11 @@ import { SideBar } from "../components/layout/SideBar";
 import { getUser, getUserPerformance } from "../service/api/user";
 import { Nutrition } from "../components/home/Nutrition";
 import { Icon } from "../components/ui/Icon";
-import { Score } from "../components/home/Score";
-import { Radarchart } from "../components/home/Radarchart";
+import { ScoreChart } from "../components/home/ScoreChart";
+import { PerformanceChart } from "../components/home/PerformanceChart";
 import { Performance, User } from "../schema/User";
 import ActivityBarChart from "../components/home/ActivityBarChart";
-import AverageSessionChart from "../components/home/AverageSessionChart";
+import { AverageSessionChart } from "../components/home/AverageSessionChart";
 
 const Home = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -81,29 +81,28 @@ const Home = () => {
     <main>
       <NavBar />
       <SideBar />
-      <div className="mt-24 ml-28 py-16 pl-28 pr-20">
+      <div className="p-4 mt-24 ml-28 lg:py-16 lg:pl-28 lg:pr-20">
         {!user ? (
           <p>Chargement...</p>
         ) : (
           <>
             <Header firstName={user.userInfos.firstName} />
-            <div className="flex flex-wrap gap-7">
-              <div className="flex flex-wrap w-3/5 flex-grow">
+            <div className="flex flex-col-reverse lg:flex-row flex-wrap gap-8">
+              <div className="w-full flex flex-wrap lg:w-3/5 flex-grow gap-12 lg:gap-7">
                 <Suspense fallback={<p>Loading...</p>}>
                   <ActivityBarChart />
                 </Suspense>
 
-                <div className="flex flex-grow justify-between">
+                <div className="flex flex-wrap flex-grow justify-between gap-7">
                   <Suspense fallback={<p>Loading...</p>}>
                     <AverageSessionChart />
-                  </Suspense>{" "}
-                  <Radarchart performance={performance} />
-                  <Score score={score} />
+                  </Suspense>
+                  <PerformanceChart performance={performance} />
+                  <ScoreChart score={score} />
                 </div>
               </div>
-              <div className="w-1/4 bg-white">
-                <Nutrition data={dataNutritions} />
-              </div>
+
+              <Nutrition data={dataNutritions} />
             </div>
           </>
         )}

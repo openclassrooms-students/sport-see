@@ -37,6 +37,18 @@ const calculateMinMax = (
   return [valueMin, valueMax];
 };
 
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="w-10 h-16 bg-primary text-[7px] text-white flex flex-col items-center justify-center">
+        <p className="flex-grow p-2">{`${payload[0].value}Kg`}</p>
+        <p className="flex-grow p-2">{`${payload[1].value}Kcal`}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const CustomLegend = ({ payload }: { payload?: { value: string }[] }) => {
   return (
     <div className="flex justify-between mx-4 mb-12">
@@ -98,13 +110,13 @@ const ActivityBarChart = () => {
   let caloriesDomain = calculateMinMax(sortedActivities, "kcal", 100);
   let weightDomain = calculateMinMax(activities, "kg", 10);
 
-  const data = activities?.map((session, index) => ({
+  const data = activities?.reverse()?.map((session, index) => ({
     ...session,
     index: index + 1,
   }));
 
   return (
-    <Card className="mb-4 h-80 !w-full bg-[#FBFBFB] p-4 xl:h-80">
+    <Card className="mb-4 h-80 !w-full p-4 xl:h-80">
       <ResponsiveContainer>
         <BarChart
           width={500}
@@ -120,14 +132,18 @@ const ActivityBarChart = () => {
           barGap={8}
         >
           <CartesianGrid strokeDasharray="3" vertical={false} />
-          <Tooltip />
+          <Tooltip
+            content={<CustomTooltip />}
+            wrapperStyle={{ outline: "none" }}
+          />
+
           <XAxis
             dataKey="index"
             stroke="#9B9EAC"
             axisLine={{ stroke: "#c8c8c8" }}
             tickLine={false}
             tickMargin={10}
-            scale="point"
+            scale="auto"
             padding={{ left: 16, right: 12 }}
           />
           <YAxis

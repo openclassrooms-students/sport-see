@@ -22,7 +22,59 @@ const CustomLegend = () => {
   );
 };
 
-const AverageSessionChart = () => {
+const CustomTooltip = ({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: { value: string }[];
+}) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="w-10 h-6 bg-white flex items-center justify-center">
+        <p className="text-[8px] text-black font-medium text-center whitespace-nowrap">{`${payload[0].value} min`}</p>
+      </div>
+    );
+  }
+  return null;
+};
+
+const CustomCursor = ({
+  points,
+  width,
+}: {
+  points?: { x: number }[];
+  width?: number;
+}) => {
+  const { x } = points?.[0] || {};
+  return (
+    <Rectangle fill="hsla(0, 0%, 0%, 9.75%)" x={x} width={width} height={300} />
+  );
+};
+
+const daySemaine = (day: number) => {
+  switch (day) {
+    case 1:
+      return "L";
+    case 2:
+      return "M";
+    case 3:
+      return "M";
+    case 4:
+      return "J";
+    case 5:
+      return "V";
+    case 6:
+      return "S";
+    case 7:
+      return "D";
+
+    default:
+      throw new Error("Erreur numéro de jour invalide");
+  }
+};
+
+export const AverageSessionChart = () => {
   const [averageSession, setAverageSession] = useState<AverageSession | null>(
     null
   );
@@ -45,52 +97,11 @@ const AverageSessionChart = () => {
     getAverageSession();
   }, []);
 
-  const CustomTooltip = ({
-    active,
-    payload,
-  }: {
-    active?: boolean;
-    payload?: { value: string }[];
-  }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="line-chart-customTooltip">
-          <p>{`${payload[0].value} min`}</p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  const CustomCursor = ({
-    points,
-    width,
-  }: {
-    points?: { x: number }[];
-    width?: number;
-  }) => {
-    const { x } = points?.[0] || {};
-    return (
-      <Rectangle
-        fill="hsla(0, 0%, 0%, 9.75%)"
-        x={x}
-        width={width}
-        height={300}
-      />
-    );
-  };
-  const days = ["L", "M", "M", "J", "V", "S", "D"];
-
-  const data = averageSession?.sessions.map((session, index) => ({
-    name: days[index],
-    length: session.sessionLength,
-  }));
-
   return (
-    <Card className="!bg-primary">
-      <ResponsiveContainer width="100%" height="100%">
+    <Card className="!bg-primary !relative">
+      <ResponsiveContainer>
         <LineChart
-          data={data}
+          data={averageSession?.sessions}
           margin={{
             left: 0,
             top: 20,
@@ -99,13 +110,17 @@ const AverageSessionChart = () => {
           }}
         >
           <XAxis
-            dataKey="name"
-            axisLine={false}
+            dataKey="day"
+            tickFormatter={daySemaine}
             tickLine={false}
-            tickMargin={20}
-            tick={{ fill: "white", opacity: ".5" }}
-            interval={"preserveStartEnd"}
+            fillOpacity={0.5}
+            style={{ transform: "scale(0.9)", transformOrigin: "bottom" }}
+            tick={{ fill: "#FFFFFF", fontWeight: 500, fontSize: 12 }}
+            tickMargin={25}
+            axisLine={false}
+            interval="preserveStartEnd"
           />
+
           <YAxis
             type="number"
             domain={["dataMin", "dataMax + 30"]}
@@ -118,7 +133,7 @@ const AverageSessionChart = () => {
             wrapperStyle={{ outline: "none" }}
           />
           <Line
-            dataKey="length"
+            dataKey="sessionLength"
             type="natural"
             stroke="#FFFFFF"
             strokeWidth={2}
@@ -135,5 +150,3 @@ const AverageSessionChart = () => {
     </Card>
   );
 };
-
-export default AverageSessionChart;

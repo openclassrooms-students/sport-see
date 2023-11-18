@@ -35,10 +35,10 @@ export const getUserPerformance = async (userId: number) => {
   return decodedData;
 };
 
-const main = async () => {
-  console.dir(await getUserAverageSessions(12), {
-    depth: null,
-  });
-};
+// const main = async () => {
+//   console.dir(await getUserAverageSessions(12), {
+//     depth: null,
+//   });
+// };
 
-main();
+// main();
