@@ -1,3 +1,7 @@
+import { FC, useContext, useEffect, useState } from "react";
+import { Performance as PerformanceType } from "../../schema/User";
+import { useResource } from "../../hooks/useResource";
+
 import {
   Radar,
   RadarChart,
@@ -5,14 +9,23 @@ import {
   PolarAngleAxis,
   ResponsiveContainer,
 } from "recharts";
-import { Performance } from "../../schema/User";
+
 import { Card } from "../ui/Card";
+import { getUserPerformance } from "../../service/api/user";
+import { UserIdContext } from "../../pages/Dashboard";
 
-type Props = {
-  performance: Performance | null;
-};
+type PerformanceChartProps = {};
 
-export const PerformanceChart = ({ performance }: Props) => {
+export const PerformanceChart: FC<PerformanceChartProps> = ({}) => {
+  const userId = useContext(UserIdContext) || 12;
+  const performanceResource = useResource(getUserPerformance, userId);
+
+  const [performance, setPerformance] = useState<PerformanceType | null>(null);
+
+  useEffect(() => {
+    performanceResource?.read().then(setPerformance);
+  }, [performanceResource]);
+
   const kind: { [key: number]: string } = {
     1: "Cardio",
     2: "Énergie",

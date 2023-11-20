@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
+import { AverageSession as AverageSessionType } from "../../schema/User";
 
 import {
   Legend,
@@ -10,9 +11,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { AverageSession } from "../../schema/User";
-import { getUserAverageSessions } from "../../service/api/user";
+
 import { Card } from "../ui/Card";
+import { Resource } from "../../hooks/useResource";
 
 const CustomLegend = () => {
   return (
@@ -74,28 +75,23 @@ const daySemaine = (day: number) => {
   }
 };
 
-export const AverageSessionChart = () => {
-  const [averageSession, setAverageSession] = useState<AverageSession | null>(
-    null
-  );
+type AverageSessionProps = {
+  averageSessionsResource: Resource<AverageSessionType>;
+};
 
-  const getAverageSession = async () => {
-    try {
-      const res = await getUserAverageSessions(12);
-
-      if (res.success) {
-        setAverageSession(res.data);
-      } else {
-        console.error(res.error);
-      }
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
+export const AverageSessionChart: FC<AverageSessionProps> = ({
+  averageSessionsResource,
+}) => {
+  const [averageSession, setAverageSession] =
+    useState<AverageSessionType | null>(null);
 
   useEffect(() => {
-    getAverageSession();
+    averageSessionsResource.read().then(setAverageSession);
   }, []);
+
+  if (!averageSession) {
+    return null;
+  }
 
   return (
     <Card className="!bg-primary !relative">

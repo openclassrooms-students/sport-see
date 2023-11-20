@@ -1,4 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { FC, useEffect, useState } from "react";
+import { Activity as ActivityType } from "../../schema/User";
+
 import {
   Bar,
   BarChart,
@@ -9,9 +11,9 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { getUserActivity } from "../../service/api/user";
-import { Activity } from "../../schema/User";
+
 import { Card } from "../ui/Card";
+import { Resource } from "../../hooks/useResource";
 
 const calculateMinMax = (
   activities: any,
@@ -76,34 +78,26 @@ const CustomLegend = ({ payload }: { payload?: { value: string }[] }) => {
   );
 };
 
-const ActivityBarChart = () => {
-  const [activity, setActivity] = useState<Activity | null>(null);
+type ActivityBarChartProps = {
+  activityResource: Resource<ActivityType>;
+};
 
-  const getActivity = async () => {
-    try {
-      const res = await getUserActivity(12);
-
-      if (res.success) {
-        setActivity(res.data);
-      } else {
-        console.error(res.error);
-      }
-    } catch (error) {
-      console.log("error", error);
-    }
-  };
+const ActivityBarChart: FC<ActivityBarChartProps> = ({ activityResource }) => {
+  const [activity, setActivity] = useState<ActivityType | null>(null);
 
   useEffect(() => {
-    getActivity();
-  }, []);
+    activityResource.read().then(setActivity);
+  }, [activityResource]);
 
-  const activities = useMemo(() => {
-    return activity?.sessions.map(({ day, kilogram, calories }) => ({
-      day,
-      kg: kilogram,
-      kcal: calories,
-    }));
-  }, [activity]);
+  if (!activity) {
+    return null;
+  }
+
+  const activities = activity?.sessions.map(({ day, kilogram, calories }) => ({
+    day,
+    kg: kilogram,
+    kcal: calories,
+  }));
 
   const sortedActivities = activities?.sort((a, b) => (a.kg > b.kg ? 1 : -1));
 
