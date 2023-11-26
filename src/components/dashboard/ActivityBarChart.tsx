@@ -1,5 +1,7 @@
-import { FC, useEffect, useState } from "react";
-import { Activity as ActivityType } from "../../schema/User";
+import { useContext } from "react";
+import useFetchData from "../../hooks/useFetchData";
+import { getUserActivity } from "../../service/api/user";
+import { UserIdContext } from "../../pages/Dashboard";
 
 import {
   Bar,
@@ -13,7 +15,6 @@ import {
 } from "recharts";
 
 import { Card } from "../ui/Card";
-import { Resource } from "../../hooks/useResource";
 
 const calculateMinMax = (
   activities: any,
@@ -78,16 +79,9 @@ const CustomLegend = ({ payload }: { payload?: { value: string }[] }) => {
   );
 };
 
-type ActivityBarChartProps = {
-  activityResource: Resource<ActivityType>;
-};
-
-const ActivityBarChart: FC<ActivityBarChartProps> = ({ activityResource }) => {
-  const [activity, setActivity] = useState<ActivityType | null>(null);
-
-  useEffect(() => {
-    activityResource.read().then(setActivity);
-  }, [activityResource]);
+export const ActivityBarChart = () => {
+  const userId = useContext(UserIdContext);
+  const activity = useFetchData(getUserActivity, userId);
 
   if (!activity) {
     return null;
@@ -176,5 +170,3 @@ const ActivityBarChart: FC<ActivityBarChartProps> = ({ activityResource }) => {
     </Card>
   );
 };
-
-export default ActivityBarChart;

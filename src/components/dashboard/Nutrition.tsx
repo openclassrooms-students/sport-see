@@ -1,21 +1,14 @@
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { User as UserType } from "../../schema/User";
-import { Resource } from "../../hooks/useResource";
 
 import { Icon } from "../ui/Icon";
 
 type NutritionProps = {
-  userResource: Resource<UserType>;
+  nutritionData: UserType["keyData"] | null;
 };
 
-export const Nutrition: FC<NutritionProps> = ({ userResource }) => {
-  const [user, setUser] = useState<UserType | null>(null);
-
-  useEffect(() => {
-    userResource.read().then(setUser);
-  }, [userResource]);
-
-  if (!user) {
+export const Nutrition: FC<NutritionProps> = ({ nutritionData }) => {
+  if (!nutritionData) {
     return null;
   }
 
@@ -23,25 +16,25 @@ export const Nutrition: FC<NutritionProps> = ({ userResource }) => {
     {
       id: 1,
       title: "Calories",
-      value: user?.keyData.calorieCount + "kCal",
+      value: nutritionData.calorieCount + "kCal",
       icon: <Icon.Calorie />,
     },
     {
       id: 2,
       title: "Proteines",
-      value: user?.keyData.proteinCount + "g",
+      value: nutritionData.proteinCount + "g",
       icon: <Icon.Protein />,
     },
     {
       id: 3,
       title: "Glucides",
-      value: user?.keyData.carbohydrateCount + "g",
+      value: nutritionData.carbohydrateCount + "g",
       icon: <Icon.Carbohydrate />,
     },
     {
       id: 4,
       title: "Lipides",
-      value: user?.keyData.lipidCount + "g",
+      value: nutritionData.lipidCount + "g",
       icon: <Icon.Lipid />,
     },
   ];

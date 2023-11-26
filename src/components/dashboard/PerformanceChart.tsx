@@ -1,6 +1,4 @@
-import { FC, useContext, useEffect, useState } from "react";
-import { Performance as PerformanceType } from "../../schema/User";
-import { useResource } from "../../hooks/useResource";
+import { useContext } from "react";
 
 import {
   Radar,
@@ -13,18 +11,15 @@ import {
 import { Card } from "../ui/Card";
 import { getUserPerformance } from "../../service/api/user";
 import { UserIdContext } from "../../pages/Dashboard";
+import useFetchData from "../../hooks/useFetchData";
 
-type PerformanceChartProps = {};
+export const PerformanceChart = () => {
+  const userId = useContext(UserIdContext);
+  const performance = useFetchData(getUserPerformance, userId);
 
-export const PerformanceChart: FC<PerformanceChartProps> = ({}) => {
-  const userId = useContext(UserIdContext) || 12;
-  const performanceResource = useResource(getUserPerformance, userId);
-
-  const [performance, setPerformance] = useState<PerformanceType | null>(null);
-
-  useEffect(() => {
-    performanceResource?.read().then(setPerformance);
-  }, [performanceResource]);
+  if (!performance) {
+    return null;
+  }
 
   const kind: { [key: number]: string } = {
     1: "Cardio",
@@ -35,7 +30,7 @@ export const PerformanceChart: FC<PerformanceChartProps> = ({}) => {
     6: "Intensité",
   };
 
-  const data = performance?.data
+  const data = performance.data
     .map((item: any) => {
       return {
         kind: kind[item.kind],
@@ -45,18 +40,20 @@ export const PerformanceChart: FC<PerformanceChartProps> = ({}) => {
     .reverse();
 
   return (
-    <Card className="bg-tertiary">
+    <Card className="bg-tertiary p-2">
       <ResponsiveContainer>
         <RadarChart data={data} cx="50%" cy="50%" outerRadius="65%">
           <PolarGrid radialLines={false} />
+
           <PolarAngleAxis
             dataKey="kind"
             stroke="white"
             dy={4}
-            tickLine={false}
             tick={{
               fontSize: 12,
             }}
+            tickLine={false}
+            axisLine={false}
           />
           <Radar
             dataKey="value"

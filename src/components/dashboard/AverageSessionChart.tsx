@@ -1,6 +1,3 @@
-import { FC, useEffect, useState } from "react";
-import { AverageSession as AverageSessionType } from "../../schema/User";
-
 import {
   Legend,
   Line,
@@ -13,7 +10,10 @@ import {
 } from "recharts";
 
 import { Card } from "../ui/Card";
-import { Resource } from "../../hooks/useResource";
+import { useContext } from "react";
+import { UserIdContext } from "../../pages/Dashboard";
+import useFetchData from "../../hooks/useFetchData";
+import { getUserAverageSessions } from "../../service/api/user";
 
 const CustomLegend = () => {
   return (
@@ -75,19 +75,9 @@ const daySemaine = (day: number) => {
   }
 };
 
-type AverageSessionProps = {
-  averageSessionsResource: Resource<AverageSessionType>;
-};
-
-export const AverageSessionChart: FC<AverageSessionProps> = ({
-  averageSessionsResource,
-}) => {
-  const [averageSession, setAverageSession] =
-    useState<AverageSessionType | null>(null);
-
-  useEffect(() => {
-    averageSessionsResource.read().then(setAverageSession);
-  }, []);
+export const AverageSessionChart = () => {
+  const userId = useContext(UserIdContext);
+  const averageSession = useFetchData(getUserAverageSessions, userId);
 
   if (!averageSession) {
     return null;
@@ -131,7 +121,7 @@ export const AverageSessionChart: FC<AverageSessionProps> = ({
           <Line
             dataKey="sessionLength"
             type="natural"
-            stroke="#FFFFFF"
+            stroke="url(#white-gradient)"
             strokeWidth={2}
             dot={false}
             activeDot={{
@@ -141,6 +131,13 @@ export const AverageSessionChart: FC<AverageSessionProps> = ({
               strokeOpacity: 0.4,
             }}
           />
+
+          <defs>
+            <linearGradient id="white-gradient" x1="0%" y1="0" x2="100%" y2="0">
+              <stop offset="30%" stopColor="rgba(255, 255, 255, 0.4)" />
+              <stop offset="100%" stopColor="#FFFFFF" />
+            </linearGradient>
+          </defs>
         </LineChart>
       </ResponsiveContainer>
     </Card>

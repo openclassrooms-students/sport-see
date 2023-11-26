@@ -9,7 +9,7 @@ const NotFound = () => {
           <p>
             <span>Oups! La page que</span> vous demandez n'existe pas.
           </p>
-          <Link className="link" to="/">
+          <Link className="link" to="/12">
             Retourner sur la page d’accueil
           </Link>
         </section>

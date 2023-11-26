@@ -1,22 +1,16 @@
-import { FC, useEffect, useState } from "react";
+import { FC } from "react";
 import { User as UserType } from "../../schema/User";
-import { Resource } from "../../hooks/useResource";
-
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { Card } from "../ui/Card";
 
 type ScoreChartProps = {
-  userResource: Resource<UserType>;
+  score: UserType["score"];
 };
 
-export const ScoreChart: FC<ScoreChartProps> = ({ userResource }) => {
-  const [user, setUser] = useState<UserType | null>(null);
-
-  useEffect(() => {
-    userResource.read().then(setUser);
-  }, [userResource]);
-
-  const score = user?.score || user?.todayScore || 0;
+export const ScoreChart: FC<ScoreChartProps> = ({ score }) => {
+  if (!score) {
+    return null;
+  }
 
   return (
     <Card className="relative bg-primary">

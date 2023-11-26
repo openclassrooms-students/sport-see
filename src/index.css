@@ -7,3 +7,11 @@
   --secondary: #fbfbfb;
   --tertiary: #282d30;
 }
+
+.recharts-polar-angle-axis {
+  transform: scaleY(1.2) scaleX(1.06) translate(-3%, -7%);
+}
+
+.recharts-polar-grid-angle line {
+  display: none;
+}

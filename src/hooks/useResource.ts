@@ -12,13 +12,14 @@ export const useResource = <T>(
 
   useEffect(() => {
     const fetchData = async () => {
+      if(!userId) throw "Erreur lors de la récupération de l'identifiant de l'utilisateur";
       try {
         const dataPromise = fetchFunction(userId);
         setResource({
           read: () => dataPromise,
         });
       } catch (error) {
-        console.error("Failed to fetch data:", error);
+        throw error;
       }
     };
 

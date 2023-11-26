@@ -1,26 +1,22 @@
-import { FC, useEffect, useState } from "react";
-import { User as UserType } from "../../schema/User";
-import { Resource } from "../../hooks/useResource";
+import { FC } from "react";
 import Header from "../layout/Header";
 
 type UserInfo = {
-  userResource: Resource<UserType>;
+  userInfos: {
+    firstName: string;
+    lastName: string;
+    age: number;
+  } | null;
 };
 
-export const UserInfo: FC<UserInfo> = ({ userResource }) => {
-  const [user, setUser] = useState<UserType | null>(null);
-
-  useEffect(() => {
-    userResource.read().then(setUser);
-  }, [userResource]);
-
-  if (!user) {
+export const UserInfo: FC<UserInfo> = ({ userInfos }) => {
+  if (!userInfos) {
     return null;
   }
 
   return (
     <div>
-      <Header firstName={user.userInfos.firstName} />
+      <Header firstName={userInfos.firstName} />
     </div>
   );
 };
