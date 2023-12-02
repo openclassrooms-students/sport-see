@@ -12,15 +12,19 @@ const useFetchData = <T>(
     setIsLoading(true);
     if (!userId) {
       setError(new Error("Erreur lors de la récupération de l'identifiant"));
-      throw new Error("Erreur lors de la récupération de l'identifiant");
+      return {
+        data: null,
+        isLoading: false,
+        error: new Error("Erreur lors de la récupération de l'identifiant"),
+      };
     }
+
     try {
       const result = await fetchFunction(userId);
       setData(result);
     } catch (e: any) {
       setIsLoading(false);
       setError(e);
-      throw e;
     }
     setIsLoading(false);
   };

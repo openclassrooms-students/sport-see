@@ -44,7 +44,7 @@ const getDataWithValidation = async <T>(
   const data = await getData<T>(url, mockData);
   const decodedData = schema.safeParse(data);
   if (!decodedData.success) {
-    throw new Error("Validation failed");
+    throw new Error(decodedData.error.message);
   }
   return decodedData.data;
 };
