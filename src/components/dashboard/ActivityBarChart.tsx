@@ -88,7 +88,7 @@ export const ActivityBarChart = () => {
   } = useFetchData(getUserActivity, userId);
 
   if (isLoading) return <div>Loading...</div>;
-  if (error || ! activity) return <div>Failed to fetch data!</div>;
+  if (error || !activity) return <div>Failed to fetch data!</div>;
 
   const activities = activity.sessions.map(({ day, kilogram, calories }) => ({
     day,
