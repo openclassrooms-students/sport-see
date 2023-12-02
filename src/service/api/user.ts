@@ -1,3 +1,4 @@
+import { z } from "zod";
 import {
   USER_MAIN_DATA,
   USER_ACTIVITY,
@@ -38,7 +39,7 @@ const getData = async <T>(url: string, mockData: T): Promise<T> => {
 const getDataWithValidation = async <T>(
   url: string,
   mockData: T,
-  schema: Zod.ZodSchema<T>
+  schema: z.ZodSchema<T>
 ): Promise<T> => {
   const data = await getData<T>(url, mockData);
   const decodedData = schema.safeParse(data);

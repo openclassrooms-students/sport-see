@@ -1,4 +1,4 @@
-import { Suspense, createContext } from "react";
+import {createContext } from "react";
 import { useParams } from "react-router-dom";
 import useFetchData from "../hooks/useFetchData";
 import { getUser } from "../service/api/user";
