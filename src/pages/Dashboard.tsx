@@ -19,7 +19,7 @@ const Dashboard = () => {
   const { userid } = useParams();
   const userId = userid ? parseInt(userid) : 12;
 
-  const user = useFetchData(getUser, userId);
+  const { data: user, isLoading, error } = useFetchData(getUser, userId);
 
   const score = user?.score || user?.todayScore || undefined;
   const userInfos = user?.userInfos || null;
@@ -32,28 +32,34 @@ const Dashboard = () => {
         <SideBar />
         <ErrorBoundary fallback={<div>Failed to fetch data!</div>}>
           <div className="p-4 mt-24 ml-28 lg:py-16 lg:pl-28 lg:pr-20">
-            <UserInfo userInfos={userInfos} />
+            {isLoading && <div className="">Loading... User Info </div>}
+            {error || !userInfos ? (
+              <div>Failed to fetch data!</div>
+            ) : (
+              <UserInfo userInfos={userInfos} />
+            )}
 
             <div className="flex flex-col-reverse lg:flex-row flex-wrap gap-8">
               <div className="w-full flex flex-wrap lg:w-3/5 flex-grow gap-12 lg:gap-7">
-                <Suspense fallback={<div>Loading activity...</div>}>
-                  <ActivityBarChart />
-                </Suspense>
+                <ActivityBarChart />
 
                 <div className="flex flex-wrap flex-grow justify-between gap-7">
-                  <Suspense fallback={<div>Loading average sessions...</div>}>
-                    <AverageSessionChart />
-                  </Suspense>
+                  <AverageSessionChart />
 
-                  <Suspense fallback={<div>Loading performance...</div>}>
-                    <PerformanceChart />
-                  </Suspense>
+                  <PerformanceChart />
 
-                  <ScoreChart score={score} />
+                  {error || !score ? (
+                    <div>Failed to fetch data!</div>
+                  ) : (
+                    <ScoreChart score={score} />
+                  )}
                 </div>
               </div>
-
-              <Nutrition nutritionData={nutritionData} />
+              {error || !nutritionData ? (
+                <div>Failed to fetch data!</div>
+              ) : (
+                <Nutrition nutritionData={nutritionData} />
+              )}
             </div>
           </div>
         </ErrorBoundary>

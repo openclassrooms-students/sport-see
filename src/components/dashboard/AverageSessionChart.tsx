@@ -77,17 +77,20 @@ const daySemaine = (day: number) => {
 
 export const AverageSessionChart = () => {
   const userId = useContext(UserIdContext);
-  const averageSession = useFetchData(getUserAverageSessions, userId);
+  const {
+    data: averageSession,
+    isLoading,
+    error,
+  } = useFetchData(getUserAverageSessions, userId);
 
-  if (!averageSession) {
-    return null;
-  }
+  if (isLoading) return <div>Loading... Average Session </div>;
+  if (error || !averageSession) return <div>Failed to fetch data!</div>;
 
   return (
     <Card className="!bg-primary !relative">
       <ResponsiveContainer>
         <LineChart
-          data={averageSession?.sessions}
+          data={averageSession.sessions}
           margin={{
             left: 0,
             top: 20,

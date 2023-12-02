@@ -15,11 +15,14 @@ import useFetchData from "../../hooks/useFetchData";
 
 export const PerformanceChart = () => {
   const userId = useContext(UserIdContext);
-  const performance = useFetchData(getUserPerformance, userId);
+  const {
+    data: performance,
+    isLoading,
+    error,
+  } = useFetchData(getUserPerformance, userId);
 
-  if (!performance) {
-    return null;
-  }
+  if (isLoading) return <div>Loading...</div>;
+  if (error || !performance) return <div>Failed to fetch data!</div>;
 
   const kind: { [key: number]: string } = {
     1: "Cardio",

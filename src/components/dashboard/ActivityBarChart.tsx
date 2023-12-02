@@ -81,13 +81,16 @@ const CustomLegend = ({ payload }: { payload?: { value: string }[] }) => {
 
 export const ActivityBarChart = () => {
   const userId = useContext(UserIdContext);
-  const activity = useFetchData(getUserActivity, userId);
+  const {
+    data: activity,
+    isLoading,
+    error,
+  } = useFetchData(getUserActivity, userId);
 
-  if (!activity) {
-    return null;
-  }
+  if (isLoading) return <div>Loading...</div>;
+  if (error || ! activity) return <div>Failed to fetch data!</div>;
 
-  const activities = activity?.sessions.map(({ day, kilogram, calories }) => ({
+  const activities = activity.sessions.map(({ day, kilogram, calories }) => ({
     day,
     kg: kilogram,
     kcal: calories,
